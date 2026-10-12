@@ -1040,6 +1040,18 @@ const MusicShellOverlays = memo(function MusicShellOverlays({
   );
 });
 
+// 预设主题 CSS 模板
+const THEME_TEMPLATES = {
+  wechat: `
+    :root { --bubble-bg: #95ec69; --app-bg: #ededed; }
+    .desktop-grid { grid-template-columns: repeat(4, 1fr); }
+  `,
+  qq: `
+    :root { --bubble-bg: #12b7f5; --app-bg: #f0f0f0; }
+    .desktop-grid { grid-template-columns: repeat(4, 1fr); }
+  `
+};
+
 export function DesktopShell({ initialThemeProfile, initialThemeAssets }: DesktopShellProps) {
   const musicOverlayControllerRef = useRef<MusicOverlayController | null>(null);
   const handleMusicOverlayControllerChange = useCallback((controller: MusicOverlayController | null) => {
@@ -1049,7 +1061,7 @@ export function DesktopShell({ initialThemeProfile, initialThemeAssets }: Deskto
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [layout, setLayout] = useState<DesktopLayout>(DEFAULT_LAYOUT);
   // Dock is an ordered icon-id list (max DOCK_MAX), kept disjoint from `layout`.
-  const [dock, setDock] = useState<DesktopIconId[]>(DOCK_DEFAULT);
+  const [dock, setDock] = useState<DesktopIconId[]>(DOCK_DEFAULT.slice(0, 4));
   // 桌面文件夹：tile 在 layout 里占格子，这张表管名字和成员
   const [folders, setFolders] = useState<DesktopFolderMap>({});
   const [openFolderId, setOpenFolderId] = useState<string | null>(null);
