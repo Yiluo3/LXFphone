@@ -355,10 +355,11 @@ function serializeCustomAppBackgroundMessage(message: ChatMessage): Record<strin
 
 /** Convert an IconId array into absolute positions (flow left-to-right, top-to-bottom) */
 function flowIconsToPositions(icons: IconId[]): IconPosition[] {
+  // 强制逻辑保证 4 列
   const result: IconPosition[] = [];
   let idx = 0;
   for (let r = 0; r < GRID_ROWS && idx < icons.length; r++) {
-    for (let c = 0; c < GRID_COLS && idx < icons.length; c++) {
+    for (let c = 0; c < 4 && idx < icons.length; c++) {
       result.push({ id: icons[idx], row: r + 1, col: c + 1 });
       idx++;
     }
@@ -1152,6 +1153,16 @@ export function DesktopShell({ initialThemeProfile, initialThemeAssets }: Deskto
   const [slotIconHeight, setSlotIconHeight] = useState<number | null>(null);
   const [slotRowStep, setSlotRowStep] = useState<number | null>(null);
   const shellRef = useRef<HTMLDivElement | null>(null);
+
+  // 全局 UI 主题切换逻辑
+  const [uiStyle, setUiStyle] = useState<"default" | "wechat" | "qq">("default");
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-ui-style", uiStyle);
+    // 注入主题样式类
+    root.classList.remove("theme-wechat", "theme-qq");
+    if (uiStyle !== "default") root.classList.add(`theme-${uiStyle}`);
+  }, [uiStyle]);
   const glassBusyTimerRef = useRef<number>(0);
   const iconGridRef = useRef<HTMLElement | null>(null);
   const swipeRef = useRef<{
